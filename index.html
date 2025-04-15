@@ -121,6 +121,10 @@
           status.innerText = "Partner disconnected.";
           stopTimer();  // Stop the timer when the partner leaves
           endBtn.style.display = "none";  // Hide the end call button
+
+          // Enable the Join button and reset the UI for User A
+        joinBtn.disabled = false;
+        joinBtn.innerText = "Join Call";  // Reset Join button text
         }
       };
 
@@ -202,7 +206,9 @@ endBtn.onclick = () => {
   if (peerConnection) peerConnection.close();
   if (socket) socket.close();
   stopTimer();
-  //joinBtn.disabled = false;
+  joinBtn.disabled = false;  // Enable join button for another call
+  joinBtn.innerText = "Join Call";  // Reset Join button text
+    
 };
 
   </script>
