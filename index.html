@@ -137,7 +137,13 @@
         if (parsed.type === "mute_state") {
           const muted = parsed.data;
           status.innerText = muted ? "Your partner is muted 🔇" : "Call ongoing 🎧";
+
+        // Mute/unmute partner's audio playback
+          if (remoteAudio) {
+           remoteAudio.muted = muted; // 👈 this line actually silences the partner's audio
+          }
         }
+
 
 
       };
@@ -161,11 +167,21 @@
         }
       };
 
-      peerConnection.ontrack = (event) => {
+      /*peerConnection.ontrack = (event) => {
         const audio = new Audio();
         audio.srcObject = event.streams[0];
         audio.play();
-      };
+      };*/
+
+      let remoteAudio;
+
+      peerConnection.ontrack = (event) => {
+        remoteAudio = new Audio();
+        remoteAudio.srcObject = event.streams[0];
+        remoteAudio.autoplay = true;
+        remoteAudio.play();
+};
+
 
       localStream.getTracks().forEach(track =>
         peerConnection.addTrack(track, localStream)
