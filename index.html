@@ -133,6 +133,13 @@
         joinBtn.disabled = false;
         joinBtn.innerText = "Join Call";  // Reset Join button text
         }
+
+        if (parsed.type === "mute_state") {
+          const muted = parsed.data;
+          status.innerText = muted ? "Your partner is muted 🔇" : "Call ongoing 🎧";
+        }
+
+
       };
 
       socket.onerror = (e) => {
@@ -177,6 +184,9 @@
         localStream.getAudioTracks().forEach(track => track.enabled = !isMuted);
         muteBtn.innerText = isMuted ? "Unmute 🔇" : "Mute 🎙️";
         status.innerText = isMuted ? "You are muted 🔇" : "Call ongoing 🎧";
+
+        sendMessage("mute_state", isMuted); // 👈 Notify peer
+
   }
 };
 
