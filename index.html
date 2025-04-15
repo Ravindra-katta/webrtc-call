@@ -42,6 +42,11 @@
 <body>
   <h2>Audio Call</h2>
   <p id="status">Click join to start</p>
+
+  <video id="localVideo" autoplay muted playsinline style="width: 45%; border-radius: 10px;"></video>
+<video id="remoteVideo" autoplay playsinline style="width: 45%; border-radius: 10px;"></video>
+
+
   <button id="joinBtn">Join Call</button>
 
   <div class="loader" id="loader"></div>
@@ -49,6 +54,8 @@
   <button id="endBtn">🔴 End Call</button>
 
   <button id="muteBtn" style="display:none;">Mute 🎙️</button>
+
+  
 
 
 
@@ -73,7 +80,11 @@
   showLoader(true);
 
   try {
-    localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    localStream = await navigator.mediaDevices.getUserMedia({ audio: true ,video: true});
+
+    const localVideo = document.getElementById("localVideo");
+    localVideo.srcObject = localStream;
+
     setupSocket();
   } catch (err) {
     status.innerText = "Mic access denied. Please allow audio.";
@@ -170,6 +181,11 @@
 
     function startConnection() {
       peerConnection = new RTCPeerConnection(config);
+      
+      peerConnection.oniceconnectionstatechange = () => {
+      console.log("ICE state:", peerConnection.iceConnectionState);
+      };
+
 
       peerConnection.onicecandidate = (event) => {
         if (event.candidate) {
@@ -190,6 +206,10 @@
         remoteAudio.srcObject = event.streams[0];
         remoteAudio.autoplay = true;
         remoteAudio.play();
+
+        const remoteVideo = document.getElementById("remoteVideo");
+        remoteVideo.srcObject = event.streams[0];
+
 
         // Start the timer when audio actually starts playing
         startTimer();
