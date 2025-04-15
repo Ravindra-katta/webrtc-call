@@ -60,19 +60,29 @@
     let localStream;
     let roomId;
     let role;
+    let remoteAudio; // <-- move this to global scope
+
 
     const config = {
       iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
     };
 
     joinBtn.onclick = async () => {
-      joinBtn.disabled = true;
-      status.innerText = "Joining...";
-      showLoader(true);
+  joinBtn.disabled = true;
+  status.innerText = "Joining...";
+  showLoader(true);
 
-      localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      setupSocket();
-    };
+  try {
+    localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    setupSocket();
+  } catch (err) {
+    status.innerText = "Mic access denied. Please allow audio.";
+    joinBtn.disabled = false;
+    showLoader(false);
+    console.error("Mic error:", err);
+  }
+};
+
 
     function setupSocket() {
       socket = new WebSocket("wss://infinityl.onrender.com"); // 👈 Use your Render URL
@@ -173,13 +183,16 @@
         audio.play();
       };*/
 
-      let remoteAudio;
+
 
       peerConnection.ontrack = (event) => {
         remoteAudio = new Audio();
         remoteAudio.srcObject = event.streams[0];
         remoteAudio.autoplay = true;
         remoteAudio.play();
+
+        // Start the timer when audio actually starts playing
+        startTimer();
 };
 
 
