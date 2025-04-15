@@ -58,11 +58,6 @@
   <button id="videoBtn" style="display:none;">Video Off 🎥</button>
 
 
-
-  
-
-
-
   <script>
     const joinBtn = document.getElementById('joinBtn');
     const status = document.getElementById('status');
@@ -75,8 +70,6 @@
 
     const videoBtn = document.getElementById("videoBtn");
     let isVideoOff = false;
-
-
 
     const config = {
       iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
@@ -102,7 +95,6 @@
   }
 };
 
-
     function setupSocket() {
       socket = new WebSocket("wss://infinityl.onrender.com"); // 👈 Use your Render URL
 
@@ -127,8 +119,6 @@
           muteBtn.style.display = "inline-block";
           videoBtn.style.display = "inline-block";
 
-
-
           startConnection();
         }
 
@@ -141,7 +131,7 @@
 
         if (parsed.type === "answer" && role === "offerer") {
           await peerConnection.setRemoteDescription(new RTCSessionDescription(parsed.data));
-          startTimer();
+          //startTimer();
 
         }
 
@@ -160,8 +150,6 @@
           muteBtn.style.display = "none";
           videoBtn.style.display = "none";
 
-
-
           // Enable the Join button and reset the UI for User A
         joinBtn.disabled = false;
         joinBtn.innerText = "Join Call";  // Reset Join button text
@@ -176,8 +164,6 @@
            remoteAudio.muted = muted; // 👈 this line actually silences the partner's audio
           }
         }
-
-
 
       };
 
@@ -255,13 +241,11 @@
       }
 };
 
-
         sendMessage("mute_state", isMuted); // 👈 Notify peer
 
 
   }
 };
-
 
     }
 
@@ -287,6 +271,7 @@ function showTimer(show) {
 }
 
 function startTimer() {
+  clearInterval(timerInterval); // Prevent multiple intervals
   seconds = 0;
   timerDisplay.textContent = "⏱ 00:00";
   showTimer(true);
@@ -297,6 +282,7 @@ function startTimer() {
     timerDisplay.textContent = `⏱ ${mins}:${secs}`;
   }, 1000);
 }
+
 
 function stopTimer() {
   clearInterval(timerInterval);
