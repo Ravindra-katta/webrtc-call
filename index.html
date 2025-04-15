@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Audio Call</title>
+</head>
+<body>
+  <h2>Audio Call</h2>
+  <p id="status">Click join to start</p>
+  <button id="joinBtn">Join Call</button>
+
+  <script>
+    const joinBtn = document.getElementById('joinBtn');
+    const status = document.getElementById('status');
+    let socket;
+    let peerConnection;
+    let localStream;
+    let roomId;
+    let role;
+
+    const config = {
+      iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+    };
+
+    joinBtn.onclick = async () => {
+      joinBtn.disabled = true;
+      status.innerText = "Joining...";
+      localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      setupSocket();
+    };
+
+    function setupSocket() {
+      socket = new WebSocket("wss://infinityl.onrender.com"); // 👈 Use your Render URL
+
+      socket.onopen = () => {
+        socket.send("join");
+        status.innerText = "Waiting for match...";
+      };
+
+      socket.onmessage = async (msg) => {
+        const parsed = JSON.parse(msg.data);
+
+        if (parsed.type === "waiting") {
+          status.innerText = "Waiting for a partner...";
+        }
+
+        if (parsed.type === "matched") {
+          roomId = parsed.roomId;
+          role = parsed.role;
+          status.innerText = `Matched in room ${roomId} as ${role}`;
+          startConnection();
+        }
+
+        if (parsed.type === "offer" && role === "answerer") {
+          await peerConnection.setRemoteDescription(new RTCSessionDescription(parsed.data));
+          const answer = await peerConnection.createAnswer();
+          await peerConnection.setLocalDescription(answer);
+          sendMessage("answer", answer);
+        }
+
+        if (parsed.type === "answer" && role === "offerer") {
+          await peerConnection.setRemoteDescription(new RTCSessionDescription(parsed.data));
+        }
+
+        if (parsed.type === "candidate") {
+          try {
+            await peerConnection.addIceCandidate(new RTCIceCandidate(parsed.data));
+          } catch (e) {
+            console.error("Error adding ICE:", e);
+          }
+        }
+
+        if (parsed.type === "partner_left") {
+          status.innerText = "Partner disconnected.";
+        }
+      };
+
+      socket.onerror = (e) => {
+        console.error("WebSocket error:", e);
+        status.innerText = "WebSocket error.";
+      };
+    }
+
+    function sendMessage(type, data) {
+      socket.send(JSON.stringify({ type, roomId, data }));
+    }
+
+    function startConnection() {
+      peerConnection = new RTCPeerConnection(config);
+
+      peerConnection.onicecandidate = (event) => {
+        if (event.candidate) {
+          sendMessage("candidate", event.candidate);
+        }
+      };
+
+      peerConnection.ontrack = (event) => {
+        const audio = new Audio();
+        audio.srcObject = event.streams[0];
+        audio.play();
+      };
+
+      localStream.getTracks().forEach(track =>
+        peerConnection.addTrack(track, localStream)
+      );
+
+      if (role === "offerer") {
+        createAndSendOffer();
+      }
+    }
+
+    async function createAndSendOffer() {
+      const offer = await peerConnection.createOffer();
+      await peerConnection.setLocalDescription(offer);
+      sendMessage("offer", offer);
+    }
+  </script>
+</body>
+</html>
