@@ -119,6 +119,8 @@
 
         if (parsed.type === "partner_left") {
           status.innerText = "Partner disconnected.";
+          stopTimer();  // Stop the timer when the partner leaves
+          endBtn.style.display = "none";  // Hide the end call button
         }
       };
 
