@@ -118,7 +118,7 @@
         }
 
         if (parsed.type === "partner_left") {
-          status.innerText = "Partner disconnected.";
+          status.innerText = "Partner disconnected.\n Want to Talk with Another Person!";
           stopTimer();  // Stop the timer when the partner leaves
           endBtn.style.display = "none";  // Hide the end call button
 
@@ -201,14 +201,14 @@ function stopTimer() {
 }
 
 endBtn.onclick = () => {
-  status.innerText = "Call ended.";
+  status.innerText = "Call ended.\n Want to Talk with another Person!";
   endBtn.style.display = "none";
   if (peerConnection) peerConnection.close();
   if (socket) socket.close();
   stopTimer();
   joinBtn.disabled = false;  // Enable join button for another call
   joinBtn.innerText = "Join Call";  // Reset Join button text
-    
+
 };
 
   </script>
