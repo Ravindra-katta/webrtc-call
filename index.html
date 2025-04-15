@@ -54,6 +54,10 @@
   <button id="endBtn">🔴 End Call</button>
 
   <button id="muteBtn" style="display:none;">Mute 🎙️</button>
+  <button id="flipBtn" style="display:none;">Flip Camera 🔄</button>
+  <button id="videoBtn" style="display:none;">Video Off 🎥</button>
+
+
 
   
 
@@ -68,6 +72,10 @@
     let roomId;
     let role;
     let remoteAudio; // <-- move this to global scope
+
+    const videoBtn = document.getElementById("videoBtn");
+    let isVideoOff = false;
+
 
 
     const config = {
@@ -117,6 +125,8 @@
           showLoader(false);
           endBtn.style.display = "inline-block";
           muteBtn.style.display = "inline-block";
+          videoBtn.style.display = "inline-block";
+
 
 
           startConnection();
@@ -148,6 +158,8 @@
           stopTimer();  // Stop the timer when the partner leaves
           endBtn.style.display = "none";  // Hide the end call button
           muteBtn.style.display = "none";
+          videoBtn.style.display = "none";
+
 
 
           // Enable the Join button and reset the UI for User A
@@ -234,7 +246,18 @@
         muteBtn.innerText = isMuted ? "Unmute 🔇" : "Mute 🎙️";
         status.innerText = isMuted ? "You are muted 🔇" : "Call ongoing 🎧";
 
+      videoBtn.onclick = () => {
+      if (localStream) {
+        isVideoOff = !isVideoOff;
+        localStream.getVideoTracks().forEach(track => track.enabled = !isVideoOff);
+        videoBtn.innerText = isVideoOff ? "Video On 🚫" : "Video Off 🎥";
+        status.innerText = isVideoOff ? "Your video is off 📵" : "Call ongoing 🎧";
+      }
+};
+
+
         sendMessage("mute_state", isMuted); // 👈 Notify peer
+
 
   }
 };
@@ -284,6 +307,8 @@ endBtn.onclick = () => {
   status.innerText = "Call ended.\n Want to Talk with another Person!";
   endBtn.style.display = "none";
   muteBtn.style.display = "none";
+  videoBtn.style.display = "none";
+
   if (peerConnection) peerConnection.close();
   if (socket) socket.close();
   stopTimer();
