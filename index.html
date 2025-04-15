@@ -7,76 +7,116 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
       body {
-        background-color: #f8f9fa;
+        background-color: #002B20;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      }
-  
-      .call-container {
-        max-width: 500px;
-        margin: auto;
+        color: white;
+        text-align: center;
         padding-top: 40px;
       }
-  
-      .video-tile {
-        width: 120px;
-        height: 120px;
+
+      .avatar {
+        width: 140px;
+        height: 140px;
         border-radius: 50%;
         overflow: hidden;
-        margin: 0 auto 20px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        margin: 0 auto 15px;
+        border: 3px solid white;
       }
-  
-      video {
+
+      .avatar video {
         width: 100%;
         height: 100%;
         object-fit: cover;
       }
-  
-      .status {
-        text-align: center;
+
+      .name-label {
         font-size: 1.2rem;
-        margin-bottom: 15px;
+        margin-bottom: 25px;
       }
-  
-      .btn-group {
+
+      .call-controls {
         display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin-top: 20px;
+        justify-content: space-around;
+        align-items: center;
+        margin-top: 25px;
+        flex-wrap: wrap;
       }
-  
+
+      .control-btn {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  margin: 10px;
+  color: white;
+  font-size: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+}
+
+
+      .end-btn {
+        background-color: red;
+      }
+
       #timer {
         font-size: 1rem;
-        text-align: center;
-        margin-top: 10px;
+        margin-top: 15px;
         display: none;
       }
     </style>
   </head>
+
 <body>
-  <div class="container call-container">
-    <div class="video-tile">
-      <video id="remoteVideo" autoplay playsinline></video>
+    <p id="status">Click join to start</p>
+  
+    <button id="joinBtn" class="btn btn-success">Join Call</button>
+    <div class="loader" id="loader"></div>
+  
+    <div class="avatar">
+      <video id="localVideo" autoplay muted playsinline></video> <!-- Video will be muted and local -->
     </div>
-    <div class="video-tile">
-      <video id="localVideo" autoplay muted playsinline></video>
+    <p class="name-label">You</p>
+  
+    <div class="avatar">
+      <video id="remoteVideo" autoplay playsinline></video> <!-- Partner video -->
     </div>
-
-    <div id="status" class="status">Click join to start</div>
+    <p class="name-label">Partner</p>
+  
     <div id="timer">⏱ 00:00</div>
-
-    <div class="d-grid gap-2">
-      <button id="joinBtn" class="btn btn-primary">Join Call</button>
+  
+    <div class="call-controls">
+      <button id="muteBtn" class="control-btn">
+    <div>🔇</div>
+    <div style="font-size: 0.85rem;">Unmute</div>
+  </button>
+  
+      <button id="videoBtn" class="control-btn">
+    <div>🎥</div>
+    <div style="font-size: 0.85rem;">Camera Off</div>
+  </button>
+  
+  <button id="endBtn" class="control-btn end-btn">
+    <div>📞</div>
+    <div style="font-size: 0.85rem;">End</div>
+  </button>
+  
+  <button id="flipBtn" class="control-btn">
+    <div>🔄</div>
+    <div style="font-size: 0.85rem;">Flip</div>
+  </button>
+  
+  <button class="control-btn">
+    <div>🔊</div>
+    <div style="font-size: 0.85rem;">Speaker</div>
+  </button>
+   <!-- Static speaker button for UI -->
     </div>
-
-    <div id="controls" class="btn-group" style="display:none;">
-      <button id="muteBtn" class="btn btn-outline-secondary">Mute 🎙️</button>
-      <button id="videoBtn" class="btn btn-outline-secondary">Video Off 🎥</button>
-      <button id="endBtn" class="btn btn-danger">End 🔴</button>
-    </div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
   <script>
     const joinBtn = document.getElementById('joinBtn');
     const status = document.getElementById('status');
