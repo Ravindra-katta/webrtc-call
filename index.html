@@ -48,6 +48,9 @@
   <div id="timer">⏱ 00:00</div>
   <button id="endBtn">🔴 End Call</button>
 
+  <button id="muteBtn" style="display:none;">Mute 🎙️</button>
+
+
 
   <script>
     const joinBtn = document.getElementById('joinBtn');
@@ -92,6 +95,8 @@
           status.innerText = `Matched in room ${roomId} as ${role}`;
           showLoader(false);
           endBtn.style.display = "inline-block";
+          muteBtn.style.display = "inline-block";
+
 
           startConnection();
         }
@@ -121,6 +126,8 @@
           status.innerText = "Partner disconnected..\n Want to Talk with Another Person!";
           stopTimer();  // Stop the timer when the partner leaves
           endBtn.style.display = "none";  // Hide the end call button
+          muteBtn.style.display = "none";
+
 
           // Enable the Join button and reset the UI for User A
         joinBtn.disabled = false;
@@ -160,6 +167,20 @@
       if (role === "offerer") {
         createAndSendOffer();
       }
+
+      const muteBtn = document.getElementById("muteBtn");
+      let isMuted = false;
+
+      muteBtn.onclick = () => {
+      if (localStream) {
+        isMuted = !isMuted;
+        localStream.getAudioTracks().forEach(track => track.enabled = !isMuted);
+        muteBtn.innerText = isMuted ? "Unmute 🔇" : "Mute 🎙️";
+        status.innerText = isMuted ? "You are muted 🔇" : "Call ongoing 🎧";
+  }
+};
+
+
     }
 
     async function createAndSendOffer() {
@@ -203,6 +224,7 @@ function stopTimer() {
 endBtn.onclick = () => {
   status.innerText = "Call ended.\n Want to Talk with another Person!";
   endBtn.style.display = "none";
+  muteBtn.style.display = "none";
   if (peerConnection) peerConnection.close();
   if (socket) socket.close();
   stopTimer();
