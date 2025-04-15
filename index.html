@@ -72,36 +72,46 @@
       }
 
       .control-btn {
-        background-color: rgba(255, 255, 255, 0.1);
-        border: none;
-        border-radius: 50%;
-        width: 60px;
-        height: 60px;
-        color: white;
-        font-size: 1.4rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background-color 0.2s ease;
-      }
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  color: white;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
 
-      .control-btn:hover,
-      .control-btn:active,
-      .control-btn:focus {
-        background-color: rgba(255, 255, 255, 0.2);
-        outline: none;
-        box-shadow: none;
-      }
+/* Apply same style on hover, focus, active */
+.control-btn:hover,
+.control-btn:focus,
+.control-btn:active,
+.control-btn:focus:active {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  outline: none;
+  box-shadow: none;
+}
 
-      .end-btn {
-        background-color: red;
-      }
+/* Special styles for End button */
+.end-btn {
+  background-color: red;
+  color: white;
+}
 
-      .end-btn:hover,
-      .end-btn:active,
-      .end-btn:focus {
-        background-color: darkred;
-      }
+.end-btn:hover,
+.end-btn:focus,
+.end-btn:active,
+.end-btn:focus:active {
+  background-color: darkred;
+  color: white;
+  outline: none;
+  box-shadow: none;
+}
+
 
       .loader {
         display: none;
