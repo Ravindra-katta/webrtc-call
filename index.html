@@ -147,7 +147,7 @@
   <div id="loader" style="display: none; font-size: 1.2rem; margin-bottom: 20px;">Connecting...</div>
 
   <div id="dailyTopicCard" class="topic-card">
-    <h5>🗣️ Today's Speaking Topic</h5>
+    <h5>🗣️ Today's Topic</h5>
     <p id="dailyTopicText">Loading topic...</p>
   </div>
   
@@ -161,16 +161,17 @@
   <div class="call-controls" id="controls" style="display: none;">
     <div class="control-wrapper">
       <button id="muteBtn" class="control-btn">🎤</button>
-      <small>Unmute</small>
+      <small id="mute_unmute">mute</small>
     </div>
     <div class="control-wrapper">
       <button id="endBtn" class="control-btn end-btn">📞</button>
       <small>End</small>
     </div>
     <div class="control-wrapper">
-      <button class="control-btn">🔊</button>
-      <small>Speaker</small>
+      <button id="speakerBtn" class="control-btn">🔊</button>
+      <small id="mic_speaker">Speaker</small>
     </div>
+    
   </div>
   
   <script>
@@ -208,16 +209,46 @@
       const index = today.getDate() % topics.length;
       return topics[index];
     }
-          const topic = getTodaysTopic();
-          const topicCard = document.getElementById("dailyTopicCard");
-          const topicText = document.getElementById("dailyTopicText");
+      const topic = getTodaysTopic();
+      const topicCard = document.getElementById("dailyTopicCard");
+      const topicText = document.getElementById("dailyTopicText");
 
-          topicText.innerText = topic;
-          topicCard.style.display = "block";
+      topicText.innerText = topic;
+      topicCard.style.display = "block";
 
-          setTimeout(() => {
-            topicCard.classList.add("show");
-          }, 100);
+      setTimeout(() => {
+        topicCard.classList.add("show");
+      }, 100);
+
+      const speakerBtn = document.getElementById('speakerBtn');
+      const micSpeakerLabel = document.getElementById('mic_speaker');
+      let isSpeakerOn = false; // Set to false initially (will use default speaker)
+
+      speakerBtn.onclick = () => {
+        if (remoteAudio) {
+          // Toggle the speaker state
+          isSpeakerOn = !isSpeakerOn;
+
+          if (isSpeakerOn) {
+            // Switch to loudspeaker
+            remoteAudio.setSinkId('default') // Use the default speaker (usually loudspeaker)
+              .then(() => {
+                speakerBtn.innerText = '🔊';  // Update icon to indicate speaker
+                micSpeakerLabel.innerText = 'Speaker';
+              })
+              .catch(err => console.error("Error setting sink ID:", err));
+          } else {
+            // Switch back to the default audio output (earphone, normal speaker)
+            remoteAudio.setSinkId('none')  // This mutes the audio or switches back to default audio output
+              .then(() => {
+                speakerBtn.innerText = '🎧';  // Change to microphone icon
+                micSpeakerLabel.innerText = 'Microphone';
+              })
+              .catch(err => console.error("Error setting sink ID:", err));
+          }
+        }
+      };
+
 
 
 
@@ -360,7 +391,7 @@
 
         if (parsed.type === "mute_state") {
           const muted = parsed.data;
-          status.innerText = muted ? "Your partner is muted 🔇" : "Call ongoing 🎧";
+          
 
         // Mute/unmute partner's audio playback
           if (remoteAudio) {
@@ -427,11 +458,19 @@
       if (localStream) {
         isMuted = !isMuted;
         localStream.getAudioTracks().forEach(track => track.enabled = !isMuted);
-        muteBtn.innerText = isMuted ? "Unmute 🔇" : "Mute 🎙️";
         status.innerText = isMuted ? "You are muted 🔇" : "Call ongoing 🎧";
 };
 
         sendMessage("mute_state", isMuted); // 👈 Notify peer
+
+        // Update the button and text to reflect the mute state
+        if (isMuted) {
+          document.getElementById('mute_unmute').innerText = 'Unmute';
+          muteBtn.innerText = '🔇';  // Update button icon when muted
+        } else {
+          document.getElementById('mute_unmute').innerText = 'Mute';
+          muteBtn.innerText = '🎤';  // Update button icon when unmuted
+        }
 
 
   }
