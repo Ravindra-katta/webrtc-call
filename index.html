@@ -85,6 +85,8 @@
 <body>
   <p id="status">Click join to start</p>
   <button id="joinBtn">Join Call</button>
+  <div id="loader" style="display: none; font-size: 1.2rem; margin-bottom: 20px;">Connecting...</div>
+
 
   <p class="name-label">You</p>
   <p class="name-label">Partner</p>
@@ -108,6 +110,11 @@
     const joinBtn = document.getElementById('joinBtn');
     const status = document.getElementById('status');
     const muteBtn = document.getElementById("muteBtn");
+    const endBtn = document.getElementById("endBtn");
+  
+    const loader = document.getElementById('loader');
+    const timerDisplay = document.getElementById('timer');
+
     let isMuted = false;
     let socket;
     let peerConnection;
@@ -288,9 +295,7 @@
       sendMessage("offer", offer);
     }
 
-const loader = document.getElementById('loader');
-const endBtn = document.getElementById('endBtn');
-const timerDisplay = document.getElementById('timer');
+
 
 let timerInterval;
 let seconds = 0;
