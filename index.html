@@ -172,6 +172,7 @@
       <small id="mic_speaker">Speaker</small>
     </div>
     
+    
   </div>
   
   <script>
@@ -220,34 +221,40 @@
         topicCard.classList.add("show");
       }, 100);
 
-      const speakerBtn = document.getElementById('speakerBtn');
-      const micSpeakerLabel = document.getElementById('mic_speaker');
-      let isSpeakerOn = false; // Set to false initially (will use default speaker)
+      let speakerOn = false;
 
-      speakerBtn.onclick = () => {
-        if (remoteAudio) {
-          // Toggle the speaker state
-          isSpeakerOn = !isSpeakerOn;
+const speakerBtn = document.getElementById("speakerBtn");
 
-          if (isSpeakerOn) {
-            // Switch to loudspeaker
-            remoteAudio.setSinkId('default') // Use the default speaker (usually loudspeaker)
-              .then(() => {
-                speakerBtn.innerText = '🔊';  // Update icon to indicate speaker
-                micSpeakerLabel.innerText = 'Speaker';
-              })
-              .catch(err => console.error("Error setting sink ID:", err));
-          } else {
-            // Switch back to the default audio output (earphone, normal speaker)
-            remoteAudio.setSinkId('none')  // This mutes the audio or switches back to default audio output
-              .then(() => {
-                speakerBtn.innerText = '🎧';  // Change to microphone icon
-                micSpeakerLabel.innerText = 'Microphone';
-              })
-              .catch(err => console.error("Error setting sink ID:", err));
-          }
-        }
-      };
+speakerBtn.onclick = async () => {
+  if (!remoteAudio || typeof remoteAudio.setSinkId !== "function") {
+    alert("Speaker toggle not supported on this device/browser.");
+    return;
+  }
+
+  try {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const outputs = devices.filter(d => d.kind === "audiooutput");
+
+    // Pick a device labeled "speaker", or just the first output (not ideal, but common fallback)
+    const speakerDevice = outputs.find(d => d.label.toLowerCase().includes("speaker")) || outputs[0];
+
+    if (!speakerDevice) {
+      alert("No speaker output device found.");
+      return;
+    }
+
+    await remoteAudio.setSinkId(speakerOn ? "default" : speakerDevice.deviceId);
+    speakerOn = !speakerOn;
+
+    speakerBtn.innerText = speakerOn ? "📢" : "🔊";
+    document.getElementById("mic_speaker").innerText = speakerOn ? "Earpiece" : "Speaker";
+
+  } catch (err) {
+    console.error("Speaker toggle error:", err);
+    alert("Unable to switch audio output: " + err.message);
+  }
+};
+
 
 
 
