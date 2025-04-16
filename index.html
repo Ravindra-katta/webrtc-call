@@ -80,6 +80,49 @@
       margin-top: 8px;
       font-size: 0.95rem;
     }
+
+    #joinBtn {
+      transition: opacity 0.3s ease;
+    }
+
+    .hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .fade {
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .fade-in {
+      opacity: 1 !important;
+      transition: opacity 0.4s ease;
+    }
+
+    .fade-out {
+      opacity: 0 !important;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+    #joinBtn, .call-controls, #youLabel, #partnerLabel, #timer {
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    body {
+      opacity: 0;
+    transition: opacity 0.6s ease;
+    }
+
+
+
+
+
   </style>
 </head>
 <body>
@@ -88,11 +131,11 @@
   <div id="loader" style="display: none; font-size: 1.2rem; margin-bottom: 20px;">Connecting...</div>
 
 
-  <p class="name-label">You</p>
-  <p class="name-label">Partner</p>
-  <div id="timer">00:00</div>
-
-  <div class="call-controls">
+  <p class="name-label" id="youLabel" style="display: none;">You</p>
+  <p class="name-label" id="partnerLabel" style="display: none;">Partner</p>
+  <div id="timer" style="display: none;">00:00</div>
+  
+  <div class="call-controls" id="controls" style="display: none;">
     <div class="control-wrapper">
       <button id="muteBtn" class="control-btn">🎤</button>
       <small>Unmute</small>
@@ -106,6 +149,7 @@
       <small>Speaker</small>
     </div>
   </div>
+  
   <script>
     const joinBtn = document.getElementById('joinBtn');
     const status = document.getElementById('status');
@@ -128,7 +172,14 @@
     };
 
     joinBtn.onclick = async () => {
+      joinBtn.classList.add("fade-out");
+      setTimeout(() => {
+        joinBtn.style.display = "none";
+      }, 400);
+
     joinBtn.disabled = true;
+    joinBtn.style.display = "none"; // Hide button
+
     status.innerText = "Joining...";
     showLoader(true);
 
@@ -164,8 +215,20 @@
           role = parsed.role;
           status.innerText = `Matched in room ${roomId} as ${role}`;
           showLoader(false);
-          endBtn.style.display = "inline-block";
-          muteBtn.style.display = "inline-block";
+          // Show call UI only now
+          document.getElementById('controls').style.display = 'flex';
+          document.getElementById('youLabel').style.display = 'block';
+          document.getElementById('partnerLabel').style.display = 'block';
+          timerDisplay.style.display = 'block';
+
+          // Fade in after a tiny delay
+          setTimeout(() => {
+            document.getElementById('controls').classList.add("fade-in");
+            document.getElementById('youLabel').classList.add("fade-in");
+            document.getElementById('partnerLabel').classList.add("fade-in");
+            timerDisplay.classList.add("fade-in");
+          }, 50);
+
 
           startConnection();
         }
@@ -194,8 +257,19 @@
         if (parsed.type === "partner_left") {
           status.innerText = "Partner disconnected..\n Want to Talk with Another Person!";
           stopTimer();  // Stop the timer when the partner leaves
-          endBtn.style.display = "none";  // Hide the end call button
-          muteBtn.style.display = "none";
+          document.getElementById('controls').classList.remove("fade-in");
+          document.getElementById('youLabel').classList.remove("fade-in");
+          document.getElementById('partnerLabel').classList.remove("fade-in");
+          timerDisplay.classList.remove("fade-in");
+
+          setTimeout(() => {
+            document.getElementById('controls').style.display = 'none';
+            document.getElementById('youLabel').style.display = 'none';
+            document.getElementById('partnerLabel').style.display = 'none';
+            timerDisplay.style.display = 'none';
+          }, 400);
+
+
 
           // 🔽 Add this cleanup
           if (remoteAudio) {
@@ -208,6 +282,13 @@
           // Enable the Join button and reset the UI for User A
         joinBtn.disabled = false;
         joinBtn.innerText = "Join Call";  // Reset Join button text
+        joinBtn.style.display = "inline-block";
+        joinBtn.classList.remove("fade-out");
+        setTimeout(() => {
+          joinBtn.classList.add("fade-in");
+        }, 50);
+
+
         }
 
         if (parsed.type === "mute_state") {
@@ -329,8 +410,21 @@ function stopTimer() {
 
 endBtn.onclick = () => {
   status.innerText = "Call ended.\n Want to Talk with another Person!";
-  endBtn.style.display = "none";
-  muteBtn.style.display = "none";
+  document.getElementById('controls').style.display = 'none';
+    document.getElementById('youLabel').style.display = 'none';
+    document.getElementById('partnerLabel').style.display = 'none';
+    timerDisplay.style.display = 'none';
+    joinBtn.disabled = false;
+    joinBtn.innerText = "Join Call";
+  joinBtn.style.display = "inline-block";
+
+// 🛠 Remove fade-out and reapply fade-in
+joinBtn.classList.remove("fade-out");
+setTimeout(() => {
+  joinBtn.classList.add("fade-in");
+}, 50);
+
+
 
   if (peerConnection) {
   peerConnection.close();
@@ -352,8 +446,18 @@ if (socket && socket.readyState === WebSocket.OPEN) {
 
   joinBtn.disabled = false;  // Enable join button for another call
   joinBtn.innerText = "Join Call";  // Reset Join button text
+  joinBtn.style.display = "inline-block";
+
 
 };
+window.onload = () => {
+  document.body.style.opacity = 1;
+  setTimeout(() => {
+    joinBtn.classList.add("fade-in");
+  }, 100); // small delay to allow the body to fade in first
+};
+
+
   </script>
 </body>
 </html>
