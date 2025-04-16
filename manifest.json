@@ -1,6 +1,6 @@
 {
-  "name": "TalkTime - Audio Chat",
-  "short_name": "TalkTime",
+  "name": "Lets Connect - Audio Chat",
+  "short_name": "InfinityL",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#00332e",
