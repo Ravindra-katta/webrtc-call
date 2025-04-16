@@ -1,162 +1,103 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio Call UI</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-      body {
-        background-color: #002B20;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        color: white;
-        text-align: center;
-        padding: 0;
-        margin: 0;
-      }
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Audio Call UI</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    body {
+      background-color: #00332e;
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
 
-      #status {
-        padding-top: 40px;
-        font-size: 1.2rem;
-        margin-bottom: 30px;
-      }
+    #status {
+      font-size: 1.4rem;
+      margin-bottom: 20px;
+    }
 
-      .avatar-section {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-        margin-bottom: 20px;
-      }
+    #joinBtn {
+      background-color: #1abc9c;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.2rem;
+      padding: 12px 32px;
+      margin-bottom: 40px;
+    }
 
-      .avatar {
-        width: 140px;
-        height: 140px;
-        border-radius: 50%;
-        overflow: hidden;
-        border: 3px solid white;
-        background-color: #fff;
-      }
+    .name-label {
+      font-size: 1.6rem;
+      font-weight: bold;
+      margin: 10px 0;
+    }
 
-      .avatar img,
-      .avatar video {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
+    #timer {
+      font-size: 1.4rem;
+      margin-top: 20px;
+      margin-bottom: 40px;
+      font-weight: 500;
+    }
 
-      .name-label {
-        font-size: 1.2rem;
-        margin-bottom: 0;
-      }
+    .call-controls {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+    }
 
-      #timer {
-        font-size: 1rem;
-        margin-top: 10px;
-        display: none;
-      }
+    .control-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-      .call-controls {
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        flex-wrap: wrap;
-        margin: 30px 20px;
-      }
+    .control-btn {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      border: none;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #1e1e1e;
+      color: white;
+    }
 
-      .control-wrapper {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin: 10px;
-      }
+    .end-btn {
+      background-color: #e74c3c;
+    }
 
-      .control-btn {
-  background-color: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  color: white;
-  font-size: 1.4rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.2s ease;
-}
-
-/* Apply same style on hover, focus, active */
-.control-btn:hover,
-.control-btn:focus,
-.control-btn:active,
-.control-btn:focus:active {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: white;
-  outline: none;
-  box-shadow: none;
-}
-
-/* Special styles for End button */
-.end-btn {
-  background-color: red;
-  color: white;
-}
-
-.end-btn:hover,
-.end-btn:focus,
-.end-btn:active,
-.end-btn:focus:active {
-  background-color: darkred;
-  color: white;
-  outline: none;
-  box-shadow: none;
-}
-
-
-      .loader {
-        display: none;
-        margin: 20px auto;
-      }
-
-      #joinBtn {
-        margin-bottom: 20px;
-      }
-    </style>
-  </head>
-
+    .control-wrapper small {
+      margin-top: 8px;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
 <body>
   <p id="status">Click join to start</p>
-  <button id="joinBtn" class="btn btn-success">Join Call</button>
-  <div class="loader" id="loader"></div>
+  <button id="joinBtn">Join Call</button>
 
-  <div class="avatar-section">
-    <div class="avatar">
-      <video id="localVideo" autoplay muted playsinline></video>
-    </div>
-    <p class="name-label">You</p>
-    <div class="avatar">
-      <video id="remoteVideo" autoplay playsinline></video>
-    </div>
-    <p class="name-label">Partner</p>
-    <div id="timer">⏱ 00:00</div>
-  </div>
+  <p class="name-label">You</p>
+  <p class="name-label">Partner</p>
+  <div id="timer">00:00</div>
 
   <div class="call-controls">
     <div class="control-wrapper">
-      <button id="muteBtn" class="control-btn">🔇</button>
+      <button id="muteBtn" class="control-btn">🎤</button>
       <small>Unmute</small>
-    </div>
-    <div class="control-wrapper">
-      <button id="videoBtn" class="control-btn">🎥</button>
-      <small>Camera off</small>
     </div>
     <div class="control-wrapper">
       <button id="endBtn" class="control-btn end-btn">📞</button>
       <small>End</small>
-    </div>
-    <div class="control-wrapper">
-      <button id="flipBtn" class="control-btn">🔄</button>
-      <small>Flip</small>
     </div>
     <div class="control-wrapper">
       <button class="control-btn">🔊</button>
@@ -166,6 +107,8 @@
   <script>
     const joinBtn = document.getElementById('joinBtn');
     const status = document.getElementById('status');
+    const muteBtn = document.getElementById("muteBtn");
+    let isMuted = false;
     let socket;
     let peerConnection;
     let localStream;
@@ -173,23 +116,17 @@
     let role;
     let remoteAudio; // <-- move this to global scope
 
-    const videoBtn = document.getElementById("videoBtn");
-    let isVideoOff = false;
-
     const config = {
       iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
     };
 
     joinBtn.onclick = async () => {
-  joinBtn.disabled = true;
-  status.innerText = "Joining...";
-  showLoader(true);
+    joinBtn.disabled = true;
+    status.innerText = "Joining...";
+    showLoader(true);
 
   try {
-    localStream = await navigator.mediaDevices.getUserMedia({ audio: true ,video: true});
-
-    const localVideo = document.getElementById("localVideo");
-    localVideo.srcObject = localStream;
+    localStream = await navigator.mediaDevices.getUserMedia({ audio: true});
 
     setupSocket();
   } catch (err) {
@@ -198,7 +135,7 @@
     showLoader(false);
     console.error("Mic error:", err);
   }
-};
+  };
 
     function setupSocket() {
       socket = new WebSocket("wss://infinityl.onrender.com"); // 👈 Use your Render URL
@@ -222,7 +159,6 @@
           showLoader(false);
           endBtn.style.display = "inline-block";
           muteBtn.style.display = "inline-block";
-          videoBtn.style.display = "inline-block";
 
           startConnection();
         }
@@ -253,7 +189,14 @@
           stopTimer();  // Stop the timer when the partner leaves
           endBtn.style.display = "none";  // Hide the end call button
           muteBtn.style.display = "none";
-          videoBtn.style.display = "none";
+
+          // 🔽 Add this cleanup
+          if (remoteAudio) {
+            remoteAudio.pause();
+            remoteAudio.srcObject = null;
+            remoteAudio = null;
+          }
+          
 
           // Enable the Join button and reset the UI for User A
         joinBtn.disabled = false;
@@ -310,8 +253,6 @@
         remoteAudio.autoplay = true;
         remoteAudio.play();
 
-        const remoteVideo = document.getElementById("remoteVideo");
-        remoteVideo.srcObject = event.streams[0];
 
 
         // Start the timer when audio actually starts playing
@@ -327,23 +268,12 @@
         createAndSendOffer();
       }
 
-      const muteBtn = document.getElementById("muteBtn");
-      let isMuted = false;
-
       muteBtn.onclick = () => {
       if (localStream) {
         isMuted = !isMuted;
         localStream.getAudioTracks().forEach(track => track.enabled = !isMuted);
         muteBtn.innerText = isMuted ? "Unmute 🔇" : "Mute 🎙️";
         status.innerText = isMuted ? "You are muted 🔇" : "Call ongoing 🎧";
-
-      videoBtn.onclick = () => {
-      if (localStream) {
-        isVideoOff = !isVideoOff;
-        localStream.getVideoTracks().forEach(track => track.enabled = !isVideoOff);
-        videoBtn.innerText = isVideoOff ? "Video On 🚫" : "Video Off 🎥";
-        status.innerText = isVideoOff ? "Your video is off 📵" : "Call ongoing 🎧";
-      }
 };
 
         sendMessage("mute_state", isMuted); // 👈 Notify peer
@@ -352,15 +282,13 @@
   }
 };
 
-    }
-
     async function createAndSendOffer() {
       const offer = await peerConnection.createOffer();
       await peerConnection.setLocalDescription(offer);
       sendMessage("offer", offer);
     }
 
-    const loader = document.getElementById('loader');
+const loader = document.getElementById('loader');
 const endBtn = document.getElementById('endBtn');
 const timerDisplay = document.getElementById('timer');
 
@@ -398,11 +326,25 @@ endBtn.onclick = () => {
   status.innerText = "Call ended.\n Want to Talk with another Person!";
   endBtn.style.display = "none";
   muteBtn.style.display = "none";
-  videoBtn.style.display = "none";
 
-  if (peerConnection) peerConnection.close();
-  if (socket) socket.close();
+  if (peerConnection) {
+  peerConnection.close();
+  peerConnection = null;
+}
+if (socket && socket.readyState === WebSocket.OPEN) {
+  socket.close();
+  socket = null;
+}
+
   stopTimer();
+
+  // 🔽 Add this cleanup
+  if (remoteAudio) {
+    remoteAudio.pause();
+    remoteAudio.srcObject = null;
+    remoteAudio = null;
+  }
+
   joinBtn.disabled = false;  // Enable join button for another call
   joinBtn.innerText = "Join Call";  // Reset Join button text
 
