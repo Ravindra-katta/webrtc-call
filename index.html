@@ -118,17 +118,40 @@
       opacity: 0;
     transition: opacity 0.6s ease;
     }
+    /*for the topic board*/
+    .topic-card {
+      background-color: #01463f;
+      border-radius: 16px;
+      padding: 20px;
+      max-width: 400px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      font-size: 1.1rem;
+      font-style: italic;
+      margin-bottom: 20px;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
 
-
-
+    .topic-card.show {
+      opacity: 1;
+    }
 
 
   </style>
 </head>
 <body>
   <p id="status">Click join to start</p>
+
+
   <button id="joinBtn">Join Call</button>
   <div id="loader" style="display: none; font-size: 1.2rem; margin-bottom: 20px;">Connecting...</div>
+
+  <div id="dailyTopicCard" class="topic-card">
+    <h5>🗣️ Today's Speaking Topic</h5>
+    <p id="dailyTopicText">Loading topic...</p>
+  </div>
+  
+  
 
 
   <p class="name-label" id="youLabel" style="display: none;">You</p>
@@ -166,6 +189,38 @@
     let roomId;
     let role;
     let remoteAudio; // <-- move this to global scope
+
+    const topics = [
+      "Describe your favorite childhood memory.",
+      "What's a skill you want to learn and why?",
+      "Talk about your dream travel destination.",
+      "Do you prefer city life or countryside? Explain.",
+      "Describe your daily routine.",
+      "What makes a good friend?",
+      "If you could time travel, where would you go?",
+      "What’s your opinion on social media?",
+      "How do you deal with stress?",
+      "Describe your favorite book or movie."
+    ];
+
+    function getTodaysTopic() {
+      const today = new Date();
+      const index = today.getDate() % topics.length;
+      return topics[index];
+    }
+          const topic = getTodaysTopic();
+          const topicCard = document.getElementById("dailyTopicCard");
+          const topicText = document.getElementById("dailyTopicText");
+
+          topicText.innerText = topic;
+          topicCard.style.display = "block";
+
+          setTimeout(() => {
+            topicCard.classList.add("show");
+          }, 100);
+
+
+
 
     const config = {
       iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
@@ -231,6 +286,18 @@
 
 
           startConnection();
+          // displayDailyTopic();
+          const topic = getTodaysTopic();
+          const topicCard = document.getElementById("dailyTopicCard");
+          const topicText = document.getElementById("dailyTopicText");
+
+          topicText.innerText = topic;
+          topicCard.style.display = "block";
+
+          setTimeout(() => {
+            topicCard.classList.add("show");
+          }, 100);
+
         }
 
         if (parsed.type === "offer" && role === "answerer") {
@@ -450,6 +517,8 @@ if (socket && socket.readyState === WebSocket.OPEN) {
 
 
 };
+
+
 window.onload = () => {
   document.body.style.opacity = 1;
   setTimeout(() => {
