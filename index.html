@@ -133,10 +133,27 @@
       opacity: 0;
       transition: opacity 0.4s ease;
     }
-    body {
+    /* body {
       opacity: 0;
     transition: opacity 0.6s ease;
-    }
+    } */
+
+    body {
+  background-color: #00332e;
+  color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;  /* ✅ This is key for vertical centering */
+  min-height: 100vh;        /* ✅ Ensures full height for mobile */
+  text-align: center;
+  box-sizing: border-box;
+}
+
+
     /*for the topic board*/
     .topic-card {
       background-color: #01463f;
