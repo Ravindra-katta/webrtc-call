@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Audio Call UI</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#1abc9c">
@@ -64,17 +65,31 @@
     }
 
     .control-btn {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      border: none;
-      font-size: 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #1e1e1e;
-      color: white;
-    }
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #2c2c2c;
+  color: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  transition: background-color 0.2s ease;
+}
+
+.control-btn:hover {
+  background-color: #3a3a3a;
+}
+
+.end-btn {
+  background-color: #d93025;
+}
+
+.end-btn:hover {
+  background-color: #b8281f;
+}
 
     .end-btn {
       background-color: #e74c3c;
@@ -140,6 +155,73 @@
       opacity: 1;
     }
 
+    /* 📱 Mobile responsiveness like WhatsApp */
+@media (max-width: 600px) {
+  body {
+    padding: 16px;
+    justify-content: flex-start;
+    height: auto;
+  }
+
+  .call-controls {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+    margin-top: auto;
+    margin-bottom: 20px;
+  }
+
+  .control-btn {
+    width: 58px;
+    height: 58px;
+    font-size: 1.2rem;
+  }
+
+  .control-wrapper small {
+    font-size: 0.8rem;
+  }
+
+  #joinBtn {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px 0;
+    font-size: 1rem;
+  }
+
+  .name-label {
+    font-size: 1.3rem;
+  }
+
+  #status, #timer {
+    font-size: 1.1rem;
+  }
+
+  .topic-card {
+    max-width: 100%;
+    padding: 14px;
+    font-size: 1rem;
+  }
+}
+
+/* 💻 For larger screens (optional refinement) */
+@media (min-width: 601px) {
+  .call-controls {
+    gap: 40px;
+  }
+
+  .control-btn {
+    width: 70px;
+    height: 70px;
+    font-size: 1.5rem;
+  }
+
+  .control-wrapper small {
+    font-size: 0.95rem;
+  }
+}
+
+
 
   </style>
 </head>
@@ -164,19 +246,20 @@
   
   <div class="call-controls" id="controls" style="display: none;">
     <div class="control-wrapper">
-      <button id="muteBtn" class="control-btn">🎤</button>
-      <small id="mute_unmute">mute</small>
+      <button id="speakerBtn" class="control-btn">
+        <i class="bi bi-volume-up-fill"></i>
+      </button>
     </div>
     <div class="control-wrapper">
-      <button id="endBtn" class="control-btn end-btn">📞</button>
-      <small>End</small>
+      <button id="muteBtn" class="control-btn">
+        <i id="muteIcon" class="bi bi-mic-fill"></i>  <!-- ✅ Updated -->
+      </button>
     </div>
     <div class="control-wrapper">
-      <button id="speakerBtn" class="control-btn">🔊</button>
-      <small id="mic_speaker">Speaker</small>
+      <button id="endBtn" class="control-btn end-btn">
+        <i class="bi bi-telephone-fill"></i>
+      </button>
     </div>
-    
-    
   </div>
   
   <script>
@@ -267,8 +350,8 @@ speakerBtn.onclick = async () => {
     await remoteAudio.setSinkId(speakerOn ? "default" : speakerDevice.deviceId);
     speakerOn = !speakerOn;
 
-    speakerBtn.innerText = speakerOn ? "📢" : "🔊";
-    document.getElementById("mic_speaker").innerText = speakerOn ? "Earpiece" : "Speaker";
+    // speakerBtn.innerText = speakerOn ? "📢" : "🔊";
+    // document.getElementById("mic_speaker").innerText = speakerOn ? "Earpiece" : "Speaker";
 
   } catch (err) {
     console.error("Speaker toggle error:", err);
@@ -431,7 +514,7 @@ speakerBtn.onclick = async () => {
 
       socket.onerror = (e) => {
         console.error("WebSocket error:", e);
-        status.innerText = "WebSocket error.";
+        status.innerText = "WebSocket error. Please try again!";
       };
     }
 
@@ -483,25 +566,28 @@ speakerBtn.onclick = async () => {
       }
 
       muteBtn.onclick = () => {
-      if (localStream) {
+        if (!localStream) return; // Exit early if no stream
+
         isMuted = !isMuted;
-        localStream.getAudioTracks().forEach(track => track.enabled = !isMuted);
-        status.innerText = isMuted ? "You are muted 🔇" : "Call ongoing 🎧";
-};
 
-        sendMessage("mute_state", isMuted); // 👈 Notify peer
+        // Enable/disable audio track
+        localStream.getAudioTracks().forEach(track => {
+        track.enabled = !isMuted;
+        status.innerText = isMuted ? "You are muted!" : "Call ongoing...";
+        });
 
-        // Update the button and text to reflect the mute state
+        // Notify peer about mute state
+        sendMessage("mute_state", isMuted);
+
+        // Update icon
         if (isMuted) {
-          document.getElementById('mute_unmute').innerText = 'Unmute';
-          muteBtn.innerText = '🔇';  // Update button icon when muted
+        muteIcon.classList.remove('bi-mic-fill');
+        muteIcon.classList.add('bi-mic-mute-fill');
         } else {
-          document.getElementById('mute_unmute').innerText = 'Mute';
-          muteBtn.innerText = '🎤';  // Update button icon when unmuted
+        muteIcon.classList.remove('bi-mic-mute-fill');
+        muteIcon.classList.add('bi-mic-fill');
         }
-
-
-  }
+      };
 };
 
     async function createAndSendOffer() {
