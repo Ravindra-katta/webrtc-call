@@ -53,14 +53,19 @@
       font-weight: 500;
     }
 
-    .call-controls {
+    /* .call-controls {
       display: flex;
       justify-content: center;
-      /* gap: 40px; */
+    
       margin-top: auto;
       padding-bottom: 20px;
-    }
-    
+    } */
+
+    .call-controls {
+      justify-content: center;
+  padding-bottom: env(safe-area-inset-bottom, 20px); /* for iOS/Android notch safety */
+  margin-bottom: 20px; /* Fallback */
+}
 
     .control-wrapper {
       display: flex;
