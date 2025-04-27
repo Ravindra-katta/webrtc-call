@@ -296,13 +296,9 @@
   
   <script>
     function notifyAndroidCallEnded() {
-  if (window.AndroidInterface && typeof window.AndroidInterface.callEnded === 'function') {
-    window.AndroidInterface.callEnded();
-  } else {
-    console.log('AndroidInterface not available, using prompt fallback');
-    window.prompt("callEnded"); // 👈 add prompt fallback here
-  }
-}
+      window.location.href = "callended://done";
+    }
+
 
 
 
