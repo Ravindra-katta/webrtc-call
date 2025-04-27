@@ -53,13 +53,6 @@
       font-weight: 500;
     }
 
-    /* .call-controls {
-      display: flex;
-      justify-content: center;
-    
-      margin-top: auto;
-      padding-bottom: 20px;
-    } */
 
     .call-controls {
   position: fixed;
@@ -208,6 +201,7 @@
     gap: 24px;
     margin-top: auto;
     margin-bottom: 20px;
+
   }
 
   .control-btn {
@@ -301,6 +295,21 @@
 </div>
   
   <script>
+    function notifyAndroidCallEnded() {
+  if (window.AndroidInterface && typeof window.AndroidInterface.callEnded === 'function') {
+    window.AndroidInterface.callEnded();
+  } else {
+    console.log('AndroidInterface not available, using prompt fallback');
+    window.prompt("callEnded"); // 👈 add prompt fallback here
+  }
+}
+
+
+
+
+
+
+
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -535,7 +544,7 @@ speakerBtn.onclick = async () => {
           joinBtn.classList.add("fade-in");
         }, 50);
 
-
+        notifyAndroidCallEnded();
         }
 
         if (parsed.type === "mute_state") {
@@ -706,7 +715,7 @@ if (socket && socket.readyState === WebSocket.OPEN) {
   joinBtn.innerText = "Join Call";  // Reset Join button text
   joinBtn.style.display = "inline-block";
 
-
+  notifyAndroidCallEnded();//for navigating from geckoview to preconnectactivity.java
 };
 
 
