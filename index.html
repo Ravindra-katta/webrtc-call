@@ -612,6 +612,47 @@ speakerBtn.onclick = async () => {
           }
         }
 
+        if (parsed.type === "call_ended" && parsed.reason === "bad_language") {
+          alert("Call ended due to inappropriate language.");
+          stopTimer();
+
+
+          // Stop speech recognition if active
+          if (typeof recognition !== 'undefined') {
+            recognition.stop();
+           }
+
+          // Close peer connection
+          if (peerConnection) {
+            peerConnection.close();
+            peerConnection = null;
+          }
+
+          // Close WebSocket if not already closed
+          if (socket && socket.readyState === WebSocket.OPEN) {
+            socket.close();
+          }
+
+          if (remoteAudio) {
+            remoteAudio.pause();
+            remoteAudio.srcObject = null;
+            remoteAudio = null;
+          }
+
+
+          // Reset UI
+          status.innerText = "Call ended due to bad language.";
+          document.getElementById('controls').style.display = 'none';
+          document.getElementById('youLabel').style.display = 'none';
+          document.getElementById('partnerLabel').style.display = 'none';
+          timerDisplay.style.display = 'none';
+
+          joinBtn.disabled = false;
+          joinBtn.style.display = "inline-block";
+        }
+
+
+
       };
 
       socket.onerror = (e) => {
