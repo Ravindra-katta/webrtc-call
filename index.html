@@ -191,7 +191,7 @@
       opacity: 1;
     }
 
-    /* 📱 Mobile responsiveness like WhatsApp */
+    /*Mobile responsiveness */
 @media (max-width: 600px) {
   body {
     padding: 16px;
@@ -241,7 +241,7 @@
   }
 }
 
-/* 💻 For larger screens (optional refinement) */
+/* For larger screens (optional ) */
 @media (min-width: 601px) {
   .call-controls {
     gap: 40px;
@@ -270,7 +270,7 @@
       <button id="joinBtn">Join Call</button>
       <div id="loader" style="display: none;">Connecting...</div>
       <div id="dailyTopicCard" class="topic-card">
-        <h5>🗣️ Today's Topic</h5>
+        <h5> Today's Topic</h5>
         <p id="dailyTopicText">Loading topic...</p>
       </div>
       <p class="name-label" id="youLabel" style="display: none;">You</p>
@@ -288,7 +288,7 @@
     </div>
     <div class="control-wrapper">
       <button id="muteBtn" class="control-btn">
-        <i id="muteIcon" class="bi bi-mic-fill"></i>  <!-- ✅ Updated -->
+        <i id="muteIcon" class="bi bi-mic-fill"></i>  
       </button>
     </div>
     <div class="control-wrapper">
@@ -344,7 +344,7 @@ if ('serviceWorker' in navigator) {
     let localStream;
     let roomId;
     let role;
-    let remoteAudio; // <-- move this to global scope
+    let remoteAudio; //remote audio should be in global scope
 
     const topics = [
       "Describe your favorite childhood memory.",
@@ -443,7 +443,7 @@ speakerBtn.onclick = async () => {
   };
 
     function setupSocket() {
-      socket = new WebSocket("wss://infinityl.onrender.com"); // 👈 Use your Render URL
+      socket = new WebSocket("wss://infinityl.onrender.com"); //  Render URL
 
       socket.onopen = () => {
         socket.send("join");
@@ -582,7 +582,7 @@ speakerBtn.onclick = async () => {
 
 
 
-          // 🔽 Add this cleanup
+          //  Adding cleanup
           if (remoteAudio) {
             remoteAudio.pause();
             remoteAudio.srcObject = null;
@@ -608,7 +608,7 @@ speakerBtn.onclick = async () => {
 
         // Mute/unmute partner's audio playback
           if (remoteAudio) {
-           remoteAudio.muted = muted; // 👈 this line actually silences the partner's audio
+           remoteAudio.muted = muted; //this line actually silences the partner's audio
           }
         }
 
@@ -781,7 +781,7 @@ endBtn.onclick = () => {
     joinBtn.innerText = "Join Call";
   joinBtn.style.display = "inline-block";
 
-// 🛠 Remove fade-out and reapply fade-in
+// Remove fade-out and reapply fade-in
 joinBtn.classList.remove("fade-out");
 setTimeout(() => {
   joinBtn.classList.add("fade-in");
@@ -800,7 +800,7 @@ if (socket && socket.readyState === WebSocket.OPEN) {
 
   stopTimer();
 
-  // 🔽 Add this cleanup
+  // Adding cleanup
   if (remoteAudio) {
     remoteAudio.pause();
     remoteAudio.srcObject = null;
