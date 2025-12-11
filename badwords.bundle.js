@@ -7,6 +7,7 @@ var FilterModule = (() => {
     return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
   };
 
+  
   // node_modules/bad-words/dist/esm/lang.js
   var localList;
   var init_lang = __esm({
