@@ -529,47 +529,48 @@ speakerBtn.onclick = async () => {
           // --- Add this block for bad language filter with speech recognition ---
         
 
-          const filter = new Filter();
+          //below for bad words detecrtion by using microphone
+        //   const filter = new Filter();
 
-          const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-          if (SpeechRecognition) {
-            const recognition = new SpeechRecognition();
-            recognition.continuous = true;
+        //   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        //   if (SpeechRecognition) {
+        //     const recognition = new SpeechRecognition();
+        //     recognition.continuous = true;
 
-            recognition.onresult = (event) => {
-              const transcript = event.results[event.resultIndex][0].transcript.toLowerCase();
+        //     recognition.onresult = (event) => {
+        //       const transcript = event.results[event.resultIndex][0].transcript.toLowerCase();
 
-          if (filter.isProfane(transcript)) {
-          // Notify server about bad language
-            socket.send(JSON.stringify({ type: 'bad_language', roomId: roomId }));
+        //   if (filter.isProfane(transcript)) {
+        //   // Notify server about bad language
+        //     socket.send(JSON.stringify({ type: 'bad_language', roomId: roomId }));
 
-            alert("Please avoid bad language! The call will be ended.");
-            recognition.stop();
+        //     alert("Please avoid bad language! The call will be ended.");
+        //     recognition.stop();
 
-            // Optionally end the call here:
-            if (peerConnection) {
-              peerConnection.close();
-              peerConnection = null;
-            }
-            if (socket && socket.readyState === WebSocket.OPEN) {
-              socket.close();
-              socket = null;
-            }
-            status.innerText = "Call ended due to inappropriate language.";
-            document.getElementById('controls').style.display = 'none';
-            document.getElementById('youLabel').style.display = 'none';
-            document.getElementById('partnerLabel').style.display = 'none';
-            timerDisplay.style.display = 'none';
+        //     // Optionally end the call here:
+        //     if (peerConnection) {
+        //       peerConnection.close();
+        //       peerConnection = null;
+        //     }
+        //     if (socket && socket.readyState === WebSocket.OPEN) {
+        //       socket.close();
+        //       socket = null;
+        //     }
+        //     status.innerText = "Call ended due to inappropriate language.";
+        //     document.getElementById('controls').style.display = 'none';
+        //     document.getElementById('youLabel').style.display = 'none';
+        //     document.getElementById('partnerLabel').style.display = 'none';
+        //     timerDisplay.style.display = 'none';
 
-            joinBtn.disabled = false;
-            joinBtn.style.display = "inline-block";
-          }
-        };
+        //     joinBtn.disabled = false;
+        //     joinBtn.style.display = "inline-block";
+        //   }
+        // };
 
-        recognition.start();
-        } else {
-        console.warn("SpeechRecognition not supported in this browser.");
-        }
+        // recognition.start();
+        // } else {
+        // console.warn("SpeechRecognition not supported in this browser.");
+        // }
 
 
         
