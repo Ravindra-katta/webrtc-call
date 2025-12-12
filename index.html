@@ -261,6 +261,31 @@
 }
 
 
+    footer {
+  position: fixed;
+  bottom: 90px;
+  width: 100%;
+  text-align: center;
+  font-size: 1rem;
+  z-index: 500;
+}
+/* below for the footer */
+
+footer a {
+  color: #1abc9c;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  footer { bottom: 110px; font-size: 0.9rem; }
+}
+
+
+
 
   </style>
 </head>
@@ -301,7 +326,16 @@
   </div>
 </div>
 
-<script src="badwords.bundle.js"></script>
+  <footer id="instaFooter">
+  <a href="https://www.instagram.com/ravindra.katta_" 
+     target="_blank" 
+     rel="noopener noreferrer" 
+     aria-label="Open Instagram profile">
+    <i class="bi bi-instagram"></i> Follow us on Instagram
+  </a>
+</footer>
+
+<!-- <script src="badwords.bundle.js"></script> -->
   
   <script>
     function notifyAndroidCallEnded() {
@@ -339,6 +373,10 @@ if ('serviceWorker' in navigator) {
   
     const loader = document.getElementById('loader');
     const timerDisplay = document.getElementById('timer');
+
+    //for footer
+    const footer = document.getElementById('instaFooter');
+
 
     let isMuted = false;
     let socket;
@@ -480,6 +518,10 @@ speakerBtn.onclick = async () => {
             timerDisplay.classList.add("fade-in");
           }, 50);
 
+          //for footer
+          footer.style.display = 'none';
+
+
 
           startConnection();
 
@@ -602,6 +644,11 @@ speakerBtn.onclick = async () => {
         }, 50);
 
         notifyAndroidCallEnded();
+          
+
+          //for footer
+          footer.style.display = 'block'; // show footer again after call ends
+
         }
 
         if (parsed.type === "mute_state") {
@@ -651,6 +698,9 @@ speakerBtn.onclick = async () => {
 
           joinBtn.disabled = false;
           joinBtn.style.display = "inline-block";
+          //for footer
+          footer.style.display = 'block'; // show footer when call ends due to bad language
+
         }
 
 
@@ -813,7 +863,13 @@ if (socket && socket.readyState === WebSocket.OPEN) {
   joinBtn.innerText = "Join Call";  // Reset Join button text
   joinBtn.style.display = "inline-block";
 
+  
   notifyAndroidCallEnded();//for navigating from geckoview to preconnectactivity.java
+
+  //for footer
+  footer.style.display = 'block'; // show footer again after call ends
+
+  
 };
 
 
@@ -827,11 +883,8 @@ window.onload = () => {
 
   </script>
 
-  <footer style="position: fixed; bottom: 10px; text-align: center; width: 100%; font-size: 1rem;">
-  <a href="https://www.instagram.com/ravindra.katta_" target="_blank" style="color: #1abc9c; text-decoration: none;">
-    <i class="bi bi-instagram"></i> Follow us on Instagram
-  </a>
-</footer>
+
+
 
 
   
