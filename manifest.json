@@ -1,6 +1,7 @@
 {
-  "name": "Lets Connect - Audio Chat",
-  "short_name": "InfinityL",
+  "name": "Strangers Talk",
+  "short_name": "StrangersTalk",
+  "description": "One-to-one audio call with strangers.",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#00332e",
